@@ -2,7 +2,7 @@ import axios from 'axios';
 import { MOCK_DISEASES } from './mockData';
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -10,10 +10,11 @@ const API = axios.create({
 
 export const predictDiseaseApi = async (selectedSymptoms) => {
   try {
-    // 1. Attempt to connect to Python FastAPI ML Microservice (port 8000)
-    const aiResponse = await axios.post('http://localhost:8000/predict', {
+    // 1. Attempt to connect to Python FastAPI ML Microservice (port 8000 or production ML URL)
+    const mlBaseUrl = import.meta.env.VITE_ML_API_URL || 'http://localhost:8000';
+    const aiResponse = await axios.post(`${mlBaseUrl}/predict`, {
       symptoms: selectedSymptoms
-    }, { timeout: 3000 });
+    }, { timeout: 5000 });
 
     if (aiResponse.data && aiResponse.data.success) {
       const pred = aiResponse.data.prediction;
