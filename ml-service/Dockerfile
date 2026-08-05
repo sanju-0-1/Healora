@@ -17,5 +17,5 @@ COPY . .
 # Expose port
 EXPOSE 8000
 
-# Command to run application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Command to run application (dynamic PORT support for Render/Cloud deployment)
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
