@@ -18,47 +18,48 @@ export const analyzeSymptomsService = async (userSymptoms = []) => {
     };
   }
 
-  let bestMatch = null;
-  let highestMatchScore = -1;
-
-  for (const disease of diseases) {
+  const matches = diseases.map((disease) => {
     const diseaseSymptoms = disease.symptoms.map((s) => s.toLowerCase().trim());
     let matchCount = 0;
+    const matchedSymptomsList = [];
 
     for (const symptom of normalizedUserSymptoms) {
       if (diseaseSymptoms.includes(symptom)) {
         matchCount++;
+        matchedSymptomsList.push(symptom);
       }
     }
 
-    if (matchCount > highestMatchScore) {
-      highestMatchScore = matchCount;
-      bestMatch = {
-        disease,
-        matchCount,
-        totalDiseaseSymptoms: diseaseSymptoms.length
-      };
-    }
-  }
+    const matchRatio = normalizedUserSymptoms.length > 0 ? matchCount / normalizedUserSymptoms.length : 0;
+    const calculatedConfidence = matchCount > 0
+      ? Math.min(98, Math.max(45, Math.round(matchRatio * 95)))
+      : 20;
 
-  if (!bestMatch || bestMatch.matchCount === 0) {
-    const fallback = diseases[0];
     return {
-      predictedDisease: fallback.name,
-      confidence: 70,
-      severity: fallback.severity,
-      doctorType: fallback.doctorType
+      disease: disease.name,
+      confidence: calculatedConfidence,
+      severity: disease.severity,
+      doctorType: disease.doctorType,
+      matchCount,
+      symptoms: disease.symptoms,
+      matchedSymptoms: matchedSymptomsList
     };
-  }
+  }).sort((a, b) => b.confidence - a.confidence);
 
-  const matchRatio = bestMatch.matchCount / normalizedUserSymptoms.length;
-  const calculatedConfidence = Math.min(98, Math.max(65, Math.round(matchRatio * 100)));
+  const primaryMatch = matches[0] || {
+    disease: 'General Viral Infection',
+    confidence: 70,
+    severity: 'Low',
+    doctorType: 'General Physician',
+    matchedSymptoms: normalizedUserSymptoms
+  };
 
   return {
-    predictedDisease: bestMatch.disease.name,
-    confidence: calculatedConfidence,
-    severity: bestMatch.disease.severity,
-    doctorType: bestMatch.disease.doctorType
+    predictedDisease: primaryMatch.disease,
+    confidence: primaryMatch.confidence,
+    severity: primaryMatch.severity,
+    doctorType: primaryMatch.doctorType,
+    possibleDiseases: matches
   };
 };
 

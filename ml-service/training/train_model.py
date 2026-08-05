@@ -2,6 +2,7 @@ import os
 import csv
 import joblib
 import numpy as np
+from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
@@ -9,34 +10,63 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score
 
+def load_dataset_from_openml(dataset_name="disease-symptoms"):
+    """
+    Attempts to fetch medical dataset from OpenML repository.
+    """
+    print(f"[*] Attempting to fetch dataset '{dataset_name}' from OpenML...")
+    try:
+        data = fetch_openml(name=dataset_name, version=1, as_frame=True, parser="auto")
+        print("[+] Successfully fetched dataset from OpenML!")
+        return data.frame
+    except Exception as e:
+        print(f"[!] Could not fetch '{dataset_name}' from OpenML ({e}). Falling back to local dataset...")
+        return None
+
 def train_and_evaluate_models():
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     dataset_path = os.path.join(base_dir, 'dataset', 'dataset.csv')
     models_dir = os.path.join(base_dir, 'app', 'models')
     os.makedirs(models_dir, exist_ok=True)
 
-    print(f"[*] Reading dataset file: {dataset_path}")
+    use_openml = os.getenv("USE_OPENML", "false").lower() == "true"
+    df_openml = None
+
+    if use_openml:
+        df_openml = load_dataset_from_openml()
 
     diseases = []
     rows_symptoms = []
     all_symptoms_set = set()
 
-    with open(dataset_path, mode='r', encoding='utf-8') as f:
-        reader = csv.reader(f)
-        header = next(reader)
-        for row in reader:
-            if not row:
-                continue
-            disease = row[0].strip()
-            symptoms = [s.strip().lower() for s in row[1:] if s.strip()]
-
+    if df_openml is not None:
+        # Parse OpenML dataframe
+        for _, row in df_openml.iterrows():
+            disease = str(row.iloc[0]).strip()
+            symptoms = [str(s).strip().lower() for s in row.iloc[1:] if str(s).strip() and str(s).lower() != 'nan']
             diseases.append(disease)
             rows_symptoms.append(symptoms)
             for s in symptoms:
                 all_symptoms_set.add(s)
+    else:
+        print(f"[*] Reading local dataset file: {dataset_path}")
+        with open(dataset_path, mode='r', encoding='utf-8') as f:
+            reader = csv.reader(f)
+            header = next(reader)
+            for row in reader:
+                if not row:
+                    continue
+                disease = row[0].strip()
+                symptoms = [s.strip().lower() for s in row[1:] if s.strip()]
+
+                diseases.append(disease)
+                rows_symptoms.append(symptoms)
+                for s in symptoms:
+                    all_symptoms_set.add(s)
 
     unique_symptoms = sorted(list(all_symptoms_set))
     print(f"[*] Discovered {len(unique_symptoms)} unique clinical symptoms across {len(diseases)} records.")
+
 
     # Create binary matrix X
     X_list = []

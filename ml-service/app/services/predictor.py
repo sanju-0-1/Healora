@@ -135,15 +135,19 @@ class DiseasePredictor:
 
         # Calculate prediction probabilities
         probabilities = self.model.predict_proba(vector)[0]
-        top_indices = np.argsort(probabilities)[::-1][:3]
+        top_indices = np.argsort(probabilities)[::-1]
 
         top_predictions = []
         for idx in top_indices:
             disease_name = str(self.label_encoder.inverse_transform([idx])[0])
             prob_percent = float(round(probabilities[idx] * 100, 1))
+            meta = MEDICAL_METADATA.get(disease_name, DEFAULT_METADATA)
             top_predictions.append({
                 "disease": disease_name,
-                "confidence": prob_percent
+                "confidence": prob_percent,
+                "doctor": meta["doctor"],
+                "severity": meta["severity"],
+                "precautions": meta["precautions"]
             })
 
         primary = top_predictions[0]
