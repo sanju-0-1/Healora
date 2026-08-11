@@ -11,25 +11,27 @@ const Button = ({
   icon: Icon = null,
   fullWidth = false
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseStyles = 'inline-flex items-center justify-center font-bold rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer';
 
   const variants = {
-    primary: 'bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500 shadow-md shadow-blue-500/20',
-    secondary: 'bg-teal-500 hover:bg-teal-600 text-white focus:ring-teal-400 shadow-md shadow-teal-500/20',
-    outline: 'border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 focus:ring-slate-400',
-    ghost: 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 focus:ring-slate-400',
+    primary: 'bg-[#F2C94C] hover:bg-[#e5b938] text-[#1A2E2A] focus:ring-[#F2C94C] shadow-lg shadow-[#F2C94C]/30 border border-[#f5d778] font-extrabold hover:shadow-[#F2C94C]/40',
+    emerald: 'bg-[#1A6B4F] hover:bg-[#13523D] text-white focus:ring-[#1A6B4F] shadow-lg shadow-[#1A6B4F]/25 border border-[#4ECCA3]/20 hover:shadow-[#1A6B4F]/35',
+    secondary: 'bg-[#F5FBF7] hover:bg-[#E8F5E9] text-[#1A6B4F] dark:bg-[#063D30] dark:hover:bg-[#042E24] dark:text-[#4ECCA3] focus:ring-[#4ECCA3] border border-[#D4E8DD] dark:border-[#13523D]',
+    outline: 'border-2 border-[#1A6B4F] text-[#1A6B4F] dark:border-[#4ECCA3] dark:text-[#4ECCA3] hover:bg-[#F5FBF7] dark:hover:bg-[#063D30] focus:ring-[#1A6B4F]',
+    ghost: 'hover:bg-[#F5FBF7] dark:hover:bg-[#063D30] text-[#1A6B4F] dark:text-[#4ECCA3] focus:ring-[#4ECCA3]',
     danger: 'bg-rose-600 hover:bg-rose-700 text-white focus:ring-rose-500 shadow-md shadow-rose-500/20'
   };
 
   const sizes = {
-    sm: 'px-3 py-1.5 text-xs gap-1.5',
-    md: 'px-4 py-2 text-sm gap-2',
-    lg: 'px-6 py-3 text-base gap-2.5'
+    sm: 'px-4 py-2 text-xs gap-1.5',
+    md: 'px-6 py-2.5 text-sm gap-2',
+    lg: 'px-8 py-3.5 text-base gap-2.5 font-black'
   };
 
   return (
     <motion.button
       whileTap={{ scale: disabled ? 1 : 0.97 }}
+      whileHover={{ scale: disabled ? 1 : 1.02 }}
       type={type}
       onClick={onClick}
       disabled={disabled}
@@ -42,3 +44,5 @@ const Button = ({
 };
 
 export default Button;
+
+

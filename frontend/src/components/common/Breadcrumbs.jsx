@@ -8,9 +8,9 @@ const Breadcrumbs = () => {
   if (pathnames.length === 0) return null;
 
   return (
-    <nav className="flex items-center gap-2 text-xs text-slate-500 mb-6">
-      <Link to="/" className="hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-1 transition">
-        <Home className="w-3.5 h-3.5" />
+    <nav className="flex items-center gap-2 text-xs font-semibold text-emerald-800/80 dark:text-emerald-300 mb-6">
+      <Link to="/" className="hover:text-emerald-950 dark:hover:text-white flex items-center gap-1.5 transition">
+        <Home className="w-3.5 h-3.5 text-emerald-600" />
         <span>Home</span>
       </Link>
       {pathnames.map((name, index) => {
@@ -20,11 +20,11 @@ const Breadcrumbs = () => {
 
         return (
           <div key={routeTo} className="flex items-center gap-2">
-            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+            <ChevronRight className="w-3.5 h-3.5 text-emerald-500" />
             {isLast ? (
-              <span className="font-semibold text-slate-900 dark:text-white">{formattedName}</span>
+              <span className="font-extrabold text-emerald-950 dark:text-white">{formattedName}</span>
             ) : (
-              <Link to={routeTo} className="hover:text-blue-600 dark:hover:text-blue-400 transition">
+              <Link to={routeTo} className="hover:text-emerald-950 dark:hover:text-white transition">
                 {formattedName}
               </Link>
             )}
@@ -36,3 +36,4 @@ const Breadcrumbs = () => {
 };
 
 export default Breadcrumbs;
+

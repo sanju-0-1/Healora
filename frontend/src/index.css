@@ -1,59 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Outfit:wght@500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+
 @layer base {
   :root {
-    --primary: #2563eb;
-    --primary-hover: #1d4ed8;
-    --secondary: #14b8a6;
-    --secondary-hover: #0d9488;
-    --bg-main: #f8fafc;
-    --card-bg: #ffffff;
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --border: #e2e8f0;
+    /* Anime Healer Exact Color Palette */
+    --sacred-emerald: #1A6B4F;
+    --mystic-mint: #4ECCA3;
+    --celestial-gold: #F2C94C;
+    --purity-white: #FFFFFF;
+    --moonlit-cream: #F5FBF7;
+    --ethereal-cyan: #A8E6CF;
+    --deep-forest: #1A2E2A;
+    --subtle-border: #D4E8DD;
+    --section-gradient-start: #F5FBF7;
+    --section-gradient-end: #E8F5E9;
+
+    --primary: var(--sacred-emerald);
+    --secondary: var(--mystic-mint);
+    --accent: var(--celestial-gold);
+    --bg-main: var(--purity-white);
+    --text-main: var(--deep-forest);
   }
 
   .dark {
-    --primary: #3b82f6;
-    --primary-hover: #60a5fa;
-    --secondary: #2dd4bf;
-    --secondary-hover: #5eead4;
-    --bg-main: #0f172a;
-    --card-bg: #1e293b;
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --border: #334155;
+    --sacred-emerald: #4ECCA3;
+    --mystic-mint: #2E9C77;
+    --celestial-gold: #F2C94C;
+    --purity-white: #042E24;
+    --moonlit-cream: #063D30;
+    --ethereal-cyan: #1A6B4F;
+    --deep-forest: #F5FBF7;
+    --subtle-border: #13523D;
   }
 
-  html.dark {
-    color-scheme: dark;
-    background-color: #0f172a;
-    color: #f8fafc;
+  html {
+    scroll-behavior: smooth;
   }
 
   body {
-    background-color: var(--bg-main);
-    color: var(--text-primary);
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(180deg, #FFFFFF 0%, #F5FBF7 50%, #E8F5E9 100%);
+    color: #1A2E2A;
+    font-family: 'Inter', 'Plus Jakarta Sans', system-ui, sans-serif;
     min-height: 100vh;
     transition: background-color 0.3s ease, color 0.3s ease;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-heading {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+    color: #1A6B4F;
+  }
+
+  .dark body {
+    background: linear-gradient(180deg, #022019 0%, #063D30 50%, #042E24 100%);
+    color: #F5FBF7;
+  }
+
+  .dark h1, .dark h2, .dark h3, .dark .font-heading {
+    color: #F5FBF7;
   }
 }
 
-/* Custom Utilities */
-.glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+/* Custom Anime Healer Animations & Glows */
+.healer-aura-glow {
+  box-shadow: 0 12px 40px -5px rgba(168, 230, 207, 0.45), 0 0 25px 0 rgba(78, 204, 164, 0.25);
+  border: 1px solid #D4E8DD;
 }
 
-.dark .glass {
-  background: rgba(30, 41, 59, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+.healer-gold-btn {
+  background-color: #F2C94C;
+  color: #1A2E2A;
+  font-weight: 800;
+  border-radius: 9999px;
+  box-shadow: 0 6px 20px rgba(242, 201, 76, 0.35);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.healer-gold-btn:hover {
+  background-color: #e5b938;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(242, 201, 76, 0.45);
+}
+
+.healer-symptom-tag {
+  background-color: #FFFFFF;
+  color: #1A6B4F;
+  border: 1.5px solid #1A6B4F;
+  border-radius: 9999px;
+  font-weight: 700;
+  padding: 0.35rem 1rem;
+  box-shadow: 0 2px 8px rgba(26, 107, 79, 0.08);
+  transition: all 0.2s ease;
+}
+
+.healer-symptom-tag:hover {
+  background-color: #F5FBF7;
+  border-color: #4ECCA3;
+  transform: translateY(-1px);
+}
+
+.score-pulse {
+  animation: mysticPulse 2.5s infinite ease-in-out;
+}
+
+@keyframes mysticPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(78, 204, 164, 0.5);
+    text-shadow: 0 0 10px rgba(78, 204, 164, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(78, 204, 164, 0);
+    text-shadow: 0 0 20px rgba(78, 204, 164, 0.9);
+  }
+}
+
+.glass-shrine-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid #D4E8DD;
+  border-radius: 24px;
+}
+
+.dark .glass-shrine-card {
+  background: rgba(6, 61, 48, 0.85);
+  border: 1px solid #13523D;
+}
+
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
@@ -62,18 +138,22 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #f0fdf4;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #022c22;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #16a34a;
   border-radius: 9999px;
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #475569;
+  background: #065f46;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #15803d;
 }

@@ -42,31 +42,31 @@ const UserCard = ({ user }) => {
 
   return (
     <>
-      <div className="p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs space-y-4">
+      <div className="p-6 bg-white dark:bg-emerald-950/60 border border-emerald-100 dark:border-emerald-900/60 rounded-3xl shadow-sm space-y-4">
         <div className="flex items-center gap-4">
           {/* Avatar Image with Hover Camera Overlay */}
           <div className="relative group cursor-pointer" onClick={() => setIsModalOpen(true)}>
             <img
               src={user.avatar || AVATAR_PRESETS[0]}
               alt={user.name}
-              className="w-16 h-16 rounded-full object-cover border-2 border-blue-500 shadow-sm transition duration-200 group-hover:opacity-80"
+              className="w-16 h-16 rounded-full object-cover border-2 border-emerald-600 shadow-md transition duration-200 group-hover:opacity-80"
             />
-            <div className="absolute inset-0 bg-slate-900/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-200">
+            <div className="absolute inset-0 bg-emerald-950/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-200">
               <Camera className="w-5 h-5 text-white" />
             </div>
             <button
               onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }}
-              className="absolute -bottom-1 -right-1 p-1 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-md transition"
-              title="Change Profile Picture"
+              className="absolute -bottom-1 -right-1 p-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full shadow-md transition cursor-pointer"
+              title="Change Profile Photo"
             >
               <Camera className="w-3.5 h-3.5" />
             </button>
           </div>
 
           <div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">{user.name}</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-0.5">
-              <Mail className="w-3.5 h-3.5" />
+            <h3 className="text-lg font-black text-emerald-950 dark:text-white">{user.name}</h3>
+            <p className="text-xs font-semibold text-emerald-800/80 dark:text-emerald-300 flex items-center gap-1.5 mt-0.5">
+              <Mail className="w-3.5 h-3.5 text-emerald-600" />
               {user.email}
             </p>
             <div className="mt-2 flex items-center gap-2">
@@ -75,7 +75,7 @@ const UserCard = ({ user }) => {
               </Badge>
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                className="text-[11px] font-extrabold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer"
               >
                 Change Photo
               </button>
@@ -83,34 +83,36 @@ const UserCard = ({ user }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
-          <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-            <Calendar className="w-4 h-4 text-blue-500" />
+        <div className="grid grid-cols-2 gap-3 pt-3 border-t border-emerald-100 dark:border-emerald-900/60 text-xs font-semibold text-emerald-900 dark:text-emerald-200">
+          <div className="flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-emerald-600" />
             <span>Age: <strong>{user.age || 28} Yrs</strong></span>
           </div>
-          <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-            <Shield className="w-4 h-4 text-teal-500" />
+          <div className="flex items-center gap-2">
+            <Shield className="w-4 h-4 text-emerald-600" />
             <span>Gender: <strong>{user.gender || 'Male'}</strong></span>
           </div>
         </div>
       </div>
 
       {/* Avatar Changer Modal */}
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Change Profile Picture">
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Update Profile Picture">
         <div className="space-y-6 text-left">
           {/* Active Preview */}
-          <div className="flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-3">
+          <div className="flex flex-col items-center justify-center p-5 bg-emerald-50/50 dark:bg-emerald-900/40 rounded-2xl border border-emerald-100 dark:border-emerald-900/60 space-y-3">
             <img
               src={customUrl.trim() ? customUrl : selectedAvatar}
               alt="Avatar Preview"
-              className="w-24 h-24 rounded-full object-cover border-4 border-blue-500 shadow-md"
+              className="w-24 h-24 rounded-full object-cover border-4 border-emerald-600 shadow-md"
             />
-            <span className="text-xs font-semibold text-slate-500">Live Preview</span>
+            <span className="text-xs font-extrabold text-emerald-950 dark:text-white">Live Avatar Preview</span>
           </div>
 
           {/* Option 1: File Upload */}
           <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500">Option 1: Upload from Computer</label>
+            <label className="block text-xs font-black uppercase tracking-wider text-emerald-950 dark:text-emerald-200">
+              Option 1: Upload Image File
+            </label>
             <input
               type="file"
               ref={fileInputRef}
@@ -123,6 +125,7 @@ const UserCard = ({ user }) => {
               fullWidth
               icon={Upload}
               onClick={() => fileInputRef.current?.click()}
+              className="font-bold"
             >
               Choose Image File (JPEG, PNG, WebP)
             </Button>
@@ -130,7 +133,9 @@ const UserCard = ({ user }) => {
 
           {/* Option 2: Choose Preset */}
           <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500">Option 2: Select Avatar Preset</label>
+            <label className="block text-xs font-black uppercase tracking-wider text-emerald-950 dark:text-emerald-200">
+              Option 2: Select Preset Avatar
+            </label>
             <div className="grid grid-cols-6 gap-2">
               {AVATAR_PRESETS.map((preset, idx) => {
                 const isSelected = selectedAvatar === preset && !customUrl;
@@ -139,12 +144,12 @@ const UserCard = ({ user }) => {
                     key={idx}
                     onClick={() => { setSelectedAvatar(preset); setCustomUrl(''); }}
                     className={`relative rounded-full cursor-pointer overflow-hidden border-2 transition ${
-                      isSelected ? 'border-blue-600 scale-105 shadow-md' : 'border-transparent hover:opacity-80'
+                      isSelected ? 'border-emerald-600 scale-105 shadow-md' : 'border-transparent hover:opacity-80'
                     }`}
                   >
                     <img src={preset} alt={`Preset ${idx + 1}`} className="w-10 h-10 rounded-full object-cover" />
                     {isSelected && (
-                      <div className="absolute inset-0 bg-blue-600/40 flex items-center justify-center text-white">
+                      <div className="absolute inset-0 bg-emerald-600/50 flex items-center justify-center text-white">
                         <Check className="w-4 h-4" />
                       </div>
                     )}
@@ -156,26 +161,28 @@ const UserCard = ({ user }) => {
 
           {/* Option 3: Image URL */}
           <div className="space-y-2">
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500">Option 3: Image Web URL</label>
+            <label className="block text-xs font-black uppercase tracking-wider text-emerald-950 dark:text-emerald-200">
+              Option 3: Web Image URL
+            </label>
             <div className="relative">
               <input
                 type="text"
                 placeholder="https://example.com/my-photo.jpg"
                 value={customUrl}
                 onChange={(e) => setCustomUrl(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white rounded-xl text-xs focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                className="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-950 dark:text-white rounded-xl text-xs font-semibold focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               />
-              <ImageIcon className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+              <ImageIcon className="w-4 h-4 text-emerald-600 absolute left-3 top-3" />
             </div>
           </div>
 
           {/* Modal Actions */}
-          <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+          <div className="pt-4 border-t border-emerald-100 dark:border-emerald-900/60 flex justify-end gap-3">
             <Button variant="ghost" size="sm" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>
-            <Button variant="primary" size="sm" onClick={handleSaveAvatar}>
-              Save Profile Picture
+            <Button variant="primary" size="sm" onClick={handleSaveAvatar} className="font-bold">
+              Save Photo
             </Button>
           </div>
         </div>

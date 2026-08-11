@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { User, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Activity } from 'lucide-react';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import useAuth from '../hooks/useAuth';
@@ -21,16 +21,21 @@ const RegisterPage = () => {
 
   return (
     <div className="space-y-6 text-left">
-      <div className="space-y-1 text-center">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Create Account</h2>
-        <p className="text-xs text-slate-500">Join Healora to manage symptom prediction history</p>
+      <div className="space-y-2 text-center">
+        <div className="p-3 bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 rounded-2xl w-fit mx-auto">
+          <Activity className="w-6 h-6 animate-pulse" />
+        </div>
+        <h2 className="text-2xl font-black text-emerald-950 dark:text-white">Create Healora Account</h2>
+        <p className="text-xs font-semibold text-emerald-800/80 dark:text-emerald-300">
+          Join Healora to manage symptom evaluation logs and track personal wellness
+        </p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <Input
           label="Full Name"
           type="text"
-          placeholder="John Doe"
+          placeholder="Jane Doe"
           icon={User}
           error={errors.name?.message}
           {...register('name', { required: 'Name is required' })}
@@ -60,7 +65,7 @@ const RegisterPage = () => {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-8 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+            className="absolute right-3.5 top-9 text-emerald-600 dark:text-emerald-400 hover:text-emerald-950 cursor-pointer"
           >
             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
           </button>
@@ -78,14 +83,14 @@ const RegisterPage = () => {
           })}
         />
 
-        <Button type="submit" variant="primary" fullWidth size="lg" icon={ArrowRight}>
-          Register Account
+        <Button type="submit" variant="primary" fullWidth size="lg" icon={ArrowRight} className="healora-glow font-black">
+          Register Patient Account
         </Button>
       </form>
 
-      <p className="text-center text-xs text-slate-500 pt-2">
-        Already have an account?{' '}
-        <Link to="/login" className="font-bold text-blue-600 dark:text-blue-400 hover:underline">
+      <p className="text-center text-xs font-semibold text-emerald-900/80 dark:text-emerald-300 pt-2">
+        Already have a Healora account?{' '}
+        <Link to="/login" className="font-black text-emerald-600 dark:text-emerald-400 hover:underline">
           Log In
         </Link>
       </p>
@@ -94,3 +99,4 @@ const RegisterPage = () => {
 };
 
 export default RegisterPage;
+
