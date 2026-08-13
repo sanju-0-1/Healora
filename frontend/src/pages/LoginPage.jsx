@@ -1,21 +1,34 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Activity, Sparkles } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Activity, Sparkles, AlertCircle } from 'lucide-react';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import useAuth from '../hooks/useAuth';
+import { loginUserApi } from '../services/api';
 
 const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [apiError, setApiError] = useState('');
+  const [loading, setLoading] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm();
 
-  const onSubmit = (data) => {
-    login(data.email, data.password);
-    navigate('/dashboard');
+  const onSubmit = async (data) => {
+    setApiError('');
+    setLoading(true);
+    const res = await loginUserApi(data.email, data.password);
+    setLoading(false);
+
+    if (res.success && res.data) {
+      login(res.data);
+      navigate('/dashboard');
+    } else {
+      setApiError(res.message || 'Invalid email or password');
+    }
   };
+
 
   return (
     <div className="space-y-6 text-left">
@@ -29,7 +42,15 @@ const LoginPage = () => {
         </p>
       </div>
 
+      {apiError && (
+        <div className="p-3.5 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900/60 rounded-2xl text-xs font-bold text-rose-700 dark:text-rose-300 flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 flex-shrink-0" />
+          <span>{apiError}</span>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+
         <Input
           label="Email Address"
           type="email"
@@ -81,15 +102,26 @@ const LoginPage = () => {
         <div className="flex-grow border-t border-emerald-100 dark:border-emerald-900"></div>
       </div>
 
-      <Button
-        variant="secondary"
-        fullWidth
-        onClick={() => { login('demo.google@healora.ai', 'password'); navigate('/dashboard'); }}
-        className="font-extrabold"
-      >
-        <Sparkles className="w-4 h-4 mr-2 text-emerald-600" />
-        Quick Demo Sign-In
-      </Button>
+      <div className="space-y-2.5">
+        <Button
+          variant="secondary"
+          fullWidth
+          onClick={() => { login('demo.google@healora.ai', 'password'); navigate('/dashboard'); }}
+          className="font-extrabold"
+        >
+          <Sparkles className="w-4 h-4 mr-2 text-emerald-600" />
+          Quick Demo Sign-In
+        </Button>
+
+        <Button
+          variant="outline"
+          fullWidth
+          onClick={() => navigate('/predict')}
+          className="font-extrabold text-emerald-800 dark:text-emerald-200 border-emerald-200 dark:border-emerald-800 hover:bg-emerald-50/80 dark:hover:bg-emerald-900/40"
+        >
+          Continue Without Sign In →
+        </Button>
+      </div>
 
       <p className="text-center text-xs font-semibold text-emerald-900/80 dark:text-emerald-300 pt-2">
         Don't have a Healora account?{' '}

@@ -14,7 +14,13 @@ import PredictionHistoryPage from '../pages/PredictionHistoryPage';
 import UserProfilePage from '../pages/UserProfilePage';
 import AboutPage from '../pages/AboutPage';
 import ContactPage from '../pages/ContactPage';
+import AIDoctorPage from '../pages/AIDoctorPage';
+import AdminDashboardPage from '../pages/AdminDashboardPage';
+import AdminLoginPage from '../pages/AdminLoginPage';
 import NotFoundPage from '../pages/NotFoundPage';
+
+import ProtectedRoute from './ProtectedRoute';
+import AdminRoute from './AdminRoute';
 
 const AppRoutes = () => {
   return (
@@ -31,16 +37,35 @@ const AppRoutes = () => {
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/admin/login" element={<AdminLoginPage />} />
       </Route>
 
-      {/* Dashboard App Pages with Sidebar */}
+
+      {/* Protected Dashboard App Pages with Sidebar */}
+      <Route element={<ProtectedRoute />}>
+        <Route element={<DashboardLayout />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/history" element={<PredictionHistoryPage />} />
+          <Route path="/profile" element={<UserProfilePage />} />
+        </Route>
+      </Route>
+
+      {/* Restricted Admin Route (Strict Admin Only) */}
+      <Route element={<AdminRoute />}>
+        <Route element={<DashboardLayout />}>
+          <Route path="/admin" element={<AdminDashboardPage />} />
+        </Route>
+      </Route>
+
+      {/* Symptom Checker, AI Doctor & Results */}
       <Route element={<DashboardLayout />}>
-        <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/predict" element={<DiseasePredictionPage />} />
         <Route path="/result" element={<PredictionResultPage />} />
-        <Route path="/history" element={<PredictionHistoryPage />} />
-        <Route path="/profile" element={<UserProfilePage />} />
+        <Route path="/ai-doctor" element={<AIDoctorPage />} />
       </Route>
+
+
+
 
       {/* Fallback 404 Route */}
       <Route element={<MainLayout />}>

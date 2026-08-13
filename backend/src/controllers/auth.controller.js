@@ -58,6 +58,7 @@ export const loginUser = async (req, res, next) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role || 'user',
         age: user.age,
         gender: user.gender,
         profileImage: user.profileImage,
@@ -68,6 +69,106 @@ export const loginUser = async (req, res, next) => {
     next(error);
   }
 };
+
+/**
+ * @desc    Register a new Admin account
+ * @route   POST /api/auth/register-admin
+ * @access  Public / Admin Secret
+ */
+export const registerAdmin = async (req, res, next) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return next(new ApiError(400, 'Validation failed', errors.array()));
+    }
+
+    const { name, email, password, age, gender, adminSecretKey } = req.body;
+
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      // If user exists, promote to admin if credentials match
+      if (await userExists.matchPassword(password)) {
+        userExists.role = 'admin';
+        await userExists.save();
+        const token = generateToken(res, userExists._id);
+        return res.status(200).json(
+          new ApiResponse(200, {
+            _id: userExists._id,
+            name: userExists.name,
+            email: userExists.email,
+            role: 'admin',
+            token
+          }, 'Existing account promoted to Admin successfully')
+        );
+      }
+      return next(new ApiError(400, 'User with this email already exists'));
+    }
+
+    const user = await User.create({
+      name,
+      email,
+      password,
+      age: age || 30,
+      gender: gender || 'Not specified',
+      role: 'admin'
+    });
+
+    const token = generateToken(res, user._id);
+
+    return res.status(201).json(
+      new ApiResponse(201, {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        token
+      }, 'Admin account created successfully')
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @desc    Dedicated Admin Login (Requires role === 'admin')
+ * @route   POST /api/auth/admin-login
+ * @access  Public
+ */
+export const adminLogin = async (req, res, next) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return next(new ApiError(400, 'Validation failed', errors.array()));
+    }
+
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user || !(await user.matchPassword(password))) {
+      return next(new ApiError(401, 'Invalid admin email or password'));
+    }
+
+    // Explicit Admin Role Check
+    if (user.role !== 'admin') {
+      return next(new ApiError(403, 'Access Denied: This account does not have Administrative privileges. Please use standard patient login.'));
+    }
+
+    const token = generateToken(res, user._id);
+
+    return res.status(200).json(
+      new ApiResponse(200, {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        token
+      }, 'Admin authentication successful')
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 export const logoutUser = async (req, res, next) => {
   try {

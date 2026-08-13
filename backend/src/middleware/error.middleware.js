@@ -17,8 +17,9 @@ export const errorHandler = (err, req, res, next) => {
 
   if (err.code === 11000) {
     statusCode = 400;
-    message = 'Duplicate field value entered';
+    message = 'An account with this email address already exists. Please log in instead.';
   }
+
 
   res.status(statusCode).json({
     success: false,

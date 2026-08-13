@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Navbar from '../components/common/Navbar';
 import Sidebar from '../components/common/Sidebar';
 import Breadcrumbs from '../components/common/Breadcrumbs';
+import FloatingAIDoctorWidget from '../components/common/FloatingAIDoctorWidget';
 
 const DashboardLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -20,9 +21,11 @@ const DashboardLayout = () => {
           <Outlet />
         </main>
       </div>
+      <FloatingAIDoctorWidget />
     </div>
   );
 };
+
 
 export default DashboardLayout;
 

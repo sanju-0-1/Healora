@@ -15,11 +15,16 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Symptom Checker', path: '/predict' },
+    { name: 'AI Doctor', path: '/ai-doctor' },
     { name: 'Health Dashboard', path: '/dashboard' },
+    ...(user?.role === 'admin' ? [{ name: 'Admin Suite', path: '/admin' }] : []),
     { name: 'History Log', path: '/history' },
     { name: 'AI Engine', path: '/about' },
     { name: 'Contact', path: '/contact' }
   ];
+
+
+
 
   const activeClass = (path) =>
     location.pathname === path
@@ -72,23 +77,23 @@ const Navbar = () => {
             {darkMode ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5 text-emerald-700" />}
           </button>
 
-          {isAuthenticated ? (
+          {isAuthenticated && user ? (
             <div className="flex items-center gap-3">
               <Link to="/profile" className="flex items-center gap-2.5 px-3 py-1.5 rounded-2xl bg-emerald-50 dark:bg-emerald-900/50 border border-emerald-200/60 dark:border-emerald-800/60 hover:bg-emerald-100 transition">
-                <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full object-cover border-2 border-emerald-600" />
-                <span className="text-sm font-bold text-emerald-950 dark:text-emerald-100">{user.name.split(' ')[0]}</span>
+                <img src={user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200'} alt={user.name || 'User'} className="w-8 h-8 rounded-full object-cover border-2 border-emerald-600" />
+                <span className="text-sm font-bold text-emerald-950 dark:text-emerald-100">{user.name ? user.name.split(' ')[0] : 'Patient'}</span>
               </Link>
-              <Button variant="ghost" size="sm" onClick={() => { logout(); navigate('/login'); }}>
+              <Button variant="ghost" size="sm" onClick={() => { logout(); navigate('/'); }}>
                 <LogOut className="w-4 h-4 text-emerald-700 dark:text-emerald-300" />
               </Button>
             </div>
           ) : (
             <div className="flex items-center gap-2">
               <Link to="/login">
-                <Button variant="outline" size="sm">Log In</Button>
+                <Button variant="outline" size="sm">Sign In</Button>
               </Link>
-              <Link to="/predict">
-                <Button variant="primary" size="sm" icon={Sparkles}>Scan Symptoms</Button>
+              <Link to="/register">
+                <Button variant="primary" size="sm">Sign Up</Button>
               </Link>
             </div>
           )}
@@ -119,22 +124,22 @@ const Navbar = () => {
             </Link>
           ))}
           <div className="pt-4 border-t border-emerald-100 dark:border-emerald-900/60 flex flex-col gap-2">
-            {isAuthenticated ? (
+            {isAuthenticated && user ? (
               <>
                 <Link to="/profile" onClick={() => setMobileOpen(false)}>
                   <Button variant="outline" fullWidth icon={User}>My Profile</Button>
                 </Link>
-                <Button variant="danger" fullWidth icon={LogOut} onClick={() => { logout(); setMobileOpen(false); navigate('/login'); }}>
+                <Button variant="danger" fullWidth icon={LogOut} onClick={() => { logout(); setMobileOpen(false); navigate('/'); }}>
                   Logout
                 </Button>
               </>
             ) : (
               <>
                 <Link to="/login" onClick={() => setMobileOpen(false)}>
-                  <Button variant="outline" fullWidth>Log In</Button>
+                  <Button variant="outline" fullWidth>Sign In</Button>
                 </Link>
-                <Link to="/predict" onClick={() => setMobileOpen(false)}>
-                  <Button variant="primary" fullWidth icon={Sparkles}>Scan Symptoms</Button>
+                <Link to="/register" onClick={() => setMobileOpen(false)}>
+                  <Button variant="primary" fullWidth>Sign Up</Button>
                 </Link>
               </>
             )}

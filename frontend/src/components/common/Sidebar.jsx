@@ -1,19 +1,25 @@
-import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Activity, History, User, Info, PhoneCall, LogOut, ChevronLeft, ChevronRight, ShieldCheck } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, Activity, Stethoscope, History, User, Info, PhoneCall, LogOut, ChevronLeft, ChevronRight, ShieldCheck } from 'lucide-react';
 import useAuth from '../../hooks/useAuth';
 
 const Sidebar = ({ isCollapsed, onToggle }) => {
   const location = useLocation();
-  const { logout } = useAuth();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Symptom Checker', path: '/predict', icon: Activity },
+    { name: 'Dr. Healora (AI)', path: '/ai-doctor', icon: Stethoscope },
+    ...(user?.role === 'admin' ? [{ name: 'Admin Suite', path: '/admin', icon: ShieldCheck }] : []),
     { name: 'Scan History', path: '/history', icon: History },
     { name: 'Patient Profile', path: '/profile', icon: User },
     { name: 'AI Architecture', path: '/about', icon: Info },
     { name: 'Clinical Support', path: '/contact', icon: PhoneCall },
   ];
+
+
+
 
   return (
     <aside className={`sticky top-20 h-[calc(100vh-5rem)] bg-white/95 dark:bg-emerald-950/95 border-r border-emerald-100 dark:border-emerald-900/40 transition-all duration-300 flex flex-col justify-between ${
@@ -62,7 +68,10 @@ const Sidebar = ({ isCollapsed, onToggle }) => {
 
       <div className="p-4 border-t border-emerald-100 dark:border-emerald-900/60">
         <button
-          onClick={logout}
+          onClick={() => {
+            logout();
+            navigate('/');
+          }}
           className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-sm font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer`}
           title={isCollapsed ? 'Logout' : ''}
         >

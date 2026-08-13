@@ -64,7 +64,26 @@ const PredictionResultPage = () => {
           </p>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
+          <Button
+            variant="secondary"
+            size="md"
+            icon={Stethoscope}
+            onClick={() =>
+              navigate('/ai-doctor', {
+                state: {
+                  diseaseContext: {
+                    diseaseName: data.name,
+                    symptoms: activeSymptoms,
+                    confidence: data.confidence || data.confidenceDefault
+                  }
+                }
+              })
+            }
+            className="bg-emerald-700 hover:bg-emerald-800 text-white shadow-md shadow-emerald-700/20"
+          >
+            Consult Dr. Healora AI
+          </Button>
           <Button variant="outline" size="md" icon={RefreshCw} onClick={() => navigate('/predict')}>
             New Scan
           </Button>
@@ -72,6 +91,7 @@ const PredictionResultPage = () => {
             Download PDF Report
           </Button>
         </div>
+
       </div>
 
       {/* Printable Report Container */}

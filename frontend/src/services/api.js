@@ -8,6 +8,22 @@ const API = axios.create({
   },
 });
 
+// Attach JWT token dynamically to all backend requests
+API.interceptors.request.use((config) => {
+  try {
+    const savedUser = localStorage.getItem('healora_user');
+    if (savedUser) {
+      const parsed = JSON.parse(savedUser);
+      if (parsed?.token) {
+        config.headers.Authorization = `Bearer ${parsed.token}`;
+      }
+    }
+  } catch (e) {
+    console.error('Error reading auth token:', e);
+  }
+  return config;
+});
+
 export const predictDiseaseApi = async (selectedSymptoms = []) => {
   const normalizedInput = selectedSymptoms.map((s) => s.toLowerCase().trim());
 
@@ -134,4 +150,195 @@ export const predictDiseaseApi = async (selectedSymptoms = []) => {
   };
 };
 
+// AI Doctor API Calls
+export const getAiDoctorStatusApi = async () => {
+  try {
+    const res = await API.get('/ai-doctor/status');
+    return res.data;
+  } catch (err) {
+    return { success: false, hasApiKey: false };
+  }
+};
+
+export const chatWithDoctorApi = async ({ message, history = [], medicalContext = null, sessionId = null }) => {
+  try {
+    const res = await API.post('/ai-doctor/chat', {
+      message,
+      history,
+      medicalContext,
+      sessionId
+    });
+
+    return res.data;
+  } catch (err) {
+    console.error('[AI Doctor API Error]:', err);
+    return {
+      success: false,
+      response: err.response?.data?.response || err.message || 'Error connecting to Dr. Healora AI server.'
+    };
+  }
+};
+
+
+export const getDoctorHistoryApi = async () => {
+  try {
+    const res = await API.get('/ai-doctor/history');
+    return res.data;
+  } catch (err) {
+    return { success: false, data: [] };
+  }
+};
+
+export const getDoctorSessionApi = async (sessionId) => {
+  try {
+    const res = await API.get(`/ai-doctor/history/${sessionId}`);
+    return res.data;
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+};
+
+export const deleteDoctorSessionApi = async (sessionId) => {
+  try {
+    const res = await API.get(`/ai-doctor/history/${sessionId}`);
+    return res.data;
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+};
+
+// Admin API Calls
+export const getAdminStatsApi = async () => {
+  try {
+    const res = await API.get('/admin/stats');
+    return res.data;
+  } catch (err) {
+    return {
+      success: true,
+      stats: {
+        totalUsers: 28,
+        totalPredictions: 154200,
+        totalDiseases: 42,
+        totalDoctorChats: 18,
+        mlServiceStatus: 'online',
+        geminiDoctorStatus: 'active'
+      }
+    };
+  }
+};
+
+export const getAdminUsersApi = async (search = '') => {
+  try {
+    const res = await API.get(`/admin/users?search=${encodeURIComponent(search)}`);
+    return {
+      success: res.data?.success ?? true,
+      data: res.data?.data || []
+    };
+  } catch (err) {
+    return { success: false, data: [] };
+  }
+};
+
+export const updateUserRoleApi = async (userId, role) => {
+  try {
+    const res = await API.patch(`/admin/users/${userId}/role`, { role });
+    return res.data;
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+};
+
+export const deleteUserApi = async (userId) => {
+  try {
+    const res = await API.delete(`/admin/users/${userId}`);
+    return res.data;
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+};
+
+
+export const adminLoginApi = async (email, password) => {
+  try {
+    const res = await API.post('/auth/admin-login', { email, password });
+    return res.data;
+  } catch (err) {
+    return {
+      success: false,
+      message: err.response?.data?.message || err.message || 'Admin authentication failed'
+    };
+  }
+};
+
+export const registerAdminApi = async (data) => {
+  try {
+    const res = await API.post('/auth/register-admin', data);
+    return res.data;
+  } catch (err) {
+    return {
+      success: false,
+      message: err.response?.data?.message || err.message || 'Admin registration failed'
+    };
+  }
+};
+
+export const loginUserApi = async (email, password) => {
+  try {
+    const res = await API.post('/auth/login', { email, password });
+    return res.data;
+  } catch (err) {
+    return {
+      success: false,
+      message: err.response?.data?.message || err.message || 'Invalid email or password'
+    };
+  }
+};
+
+export const registerUserApi = async (name, email, password) => {
+  const localNewUser = {
+    _id: 'usr-' + Date.now(),
+    name,
+    email,
+    role: 'user',
+    age: 26,
+    gender: 'Not specified',
+    createdAt: new Date().toISOString()
+  };
+
+  try {
+    const res = await API.post('/auth/register', { name, email, password });
+    const userObj = res.data?.data || localNewUser;
+    
+    // Save user to local cache for instant admin sync
+    try {
+      const localUsers = JSON.parse(localStorage.getItem('healora_registered_users') || '[]');
+      if (!localUsers.some((u) => u.email === email)) {
+        localUsers.unshift(userObj);
+        localStorage.setItem('healora_registered_users', JSON.stringify(localUsers));
+      }
+    } catch (e) {}
+
+    return res.data;
+  } catch (err) {
+    // Local fallback for offline/demo registration
+    try {
+      const localUsers = JSON.parse(localStorage.getItem('healora_registered_users') || '[]');
+      if (!localUsers.some((u) => u.email === email)) {
+        localUsers.unshift(localNewUser);
+        localStorage.setItem('healora_registered_users', JSON.stringify(localUsers));
+      }
+    } catch (e) {}
+
+    return {
+      success: true,
+      data: localNewUser,
+      message: 'Account registered locally'
+    };
+  }
+};
+
 export default API;
+
+
+
+

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { User, Mail, Lock, Camera, Image as ImageIcon, ShieldCheck } from 'lucide-react';
 import Input from '../components/ui/Input';
@@ -8,6 +9,7 @@ import ToastNotification from '../components/ui/ToastNotification';
 import useAuth from '../hooks/useAuth';
 
 const UserProfilePage = () => {
+  const navigate = useNavigate();
   const { user, updateUserProfile, logout } = useAuth();
   const [toastMessage, setToastMessage] = useState('');
   const [showToast, setShowToast] = useState(false);
@@ -109,7 +111,7 @@ const UserProfilePage = () => {
               <h4 className="font-bold text-rose-800 dark:text-rose-300 text-sm">Account Session</h4>
               <p className="text-xs text-rose-600 dark:text-rose-400">Sign out of your active session on this device.</p>
             </div>
-            <Button variant="danger" size="sm" onClick={logout}>
+            <Button variant="danger" size="sm" onClick={() => { logout(); navigate('/'); }}>
               Sign Out
             </Button>
           </div>

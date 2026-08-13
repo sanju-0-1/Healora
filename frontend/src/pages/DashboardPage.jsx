@@ -23,9 +23,10 @@ const DashboardPage = () => {
           <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-black tracking-wide uppercase">
             <Sparkles className="w-3.5 h-3.5" /> Healora Personal Health Hub
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight">
-            Welcome back, {user?.name || 'Patient'} 👋
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
+            Welcome back, <span className="text-amber-300 font-extrabold">{user?.name || 'Patient'}</span> 👋
           </h1>
+
           <p className="text-emerald-100 text-sm max-w-xl font-medium">
             Your clinical AI health assistant is ready. Evaluate current symptoms or review past neural diagnostic history below.
           </p>

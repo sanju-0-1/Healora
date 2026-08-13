@@ -8,8 +8,11 @@ import authRoutes from './routes/auth.routes.js';
 import userRoutes from './routes/user.routes.js';
 import diseaseRoutes from './routes/disease.routes.js';
 import predictionRoutes from './routes/prediction.routes.js';
+import aiDoctorRoutes from './routes/aiDoctor.routes.js';
+import adminRoutes from './routes/admin.routes.js';
 
 import { notFound, errorHandler } from './middleware/error.middleware.js';
+
 
 const app = express();
 
@@ -52,6 +55,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/diseases', diseaseRoutes);
 app.use('/api/predictions', predictionRoutes);
+app.use('/api/ai-doctor', aiDoctorRoutes);
+app.use('/api/admin', adminRoutes);
+
+
 
 // Error Handling Middlewares
 app.use(notFound);

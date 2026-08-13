@@ -1,20 +1,24 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Activity, X, Sparkles, Filter, CheckCircle2, Stethoscope, ShieldCheck } from 'lucide-react';
+import { Activity, X, Sparkles, Filter, CheckCircle2, ShieldCheck, History, UserCheck, FileText, Lock, LogIn, UserPlus } from 'lucide-react';
 import SearchBox from '../components/ui/SearchBox';
 import SymptomCard from '../components/cards/SymptomCard';
 import Button from '../components/ui/Button';
+import Modal from '../components/ui/Modal';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import usePrediction from '../hooks/usePrediction';
+import useAuth from '../hooks/useAuth';
 import { MOCK_SYMPTOMS } from '../services/mockData';
 import { POPULAR_SYMPTOMS } from '../utils/constants';
 
 const DiseasePredictionPage = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const { selectedSymptoms, addSymptom, removeSymptom, clearSymptoms, runPrediction, isPredicting } = usePrediction();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const categories = ['All', 'General', 'Respiratory', 'Neurological', 'Cardiovascular', 'Gastrointestinal', 'Musculoskeletal'];
 
@@ -24,11 +28,19 @@ const DiseasePredictionPage = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const handlePredict = async () => {
-    if (selectedSymptoms.length === 0) return;
+  const executeScan = async () => {
     const result = await runPrediction();
     if (result) {
       navigate('/result');
+    }
+  };
+
+  const handlePredictClick = () => {
+    if (selectedSymptoms.length === 0) return;
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+    } else {
+      executeScan();
     }
   };
 
@@ -125,7 +137,7 @@ const DiseasePredictionPage = () => {
             variant="primary"
             size="lg"
             disabled={selectedSymptoms.length === 0}
-            onClick={handlePredict}
+            onClick={handlePredictClick}
             icon={Sparkles}
             className="healora-glow font-extrabold"
           >
@@ -204,6 +216,99 @@ const DiseasePredictionPage = () => {
           );
         })}
       </div>
+
+      {/* Auth Benefit Modal for Unauthenticated Users */}
+      <Modal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        title="Enhance Your AI Diagnostic Scan"
+      >
+        <div className="space-y-5 text-left">
+          <div className="p-4 bg-emerald-50 dark:bg-emerald-900/40 rounded-2xl border border-emerald-100 dark:border-emerald-800 flex items-start gap-3">
+            <Sparkles className="w-6 h-6 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
+            <div>
+              <h4 className="font-extrabold text-emerald-950 dark:text-white text-sm">
+                Unlock Full Clinical Health Features
+              </h4>
+              <p className="text-xs text-emerald-800 dark:text-emerald-300 font-medium mt-0.5">
+                Sign in to enjoy personalized AI diagnostic tracking, or continue directly as a guest.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-3 pt-1">
+            <h5 className="text-xs font-black uppercase tracking-wider text-emerald-950 dark:text-emerald-200">
+              Why Sign In Before Scanning?
+            </h5>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div className="p-3 bg-white dark:bg-emerald-950/80 rounded-xl border border-emerald-100 dark:border-emerald-900 flex items-start gap-2.5">
+                <History className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <strong className="block text-emerald-950 dark:text-white font-bold">Save History Logs</strong>
+                  <span className="text-emerald-800/80 dark:text-emerald-300">Keep record of all past evaluations.</span>
+                </div>
+              </div>
+
+              <div className="p-3 bg-white dark:bg-emerald-950/80 rounded-xl border border-emerald-100 dark:border-emerald-900 flex items-start gap-2.5">
+                <UserCheck className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <strong className="block text-emerald-950 dark:text-white font-bold">Personalized Results</strong>
+                  <span className="text-emerald-800/80 dark:text-emerald-300">Tailored to age, gender & profile.</span>
+                </div>
+              </div>
+
+              <div className="p-3 bg-white dark:bg-emerald-950/80 rounded-xl border border-emerald-100 dark:border-emerald-900 flex items-start gap-2.5">
+                <FileText className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <strong className="block text-emerald-950 dark:text-white font-bold">Clinical PDF Reports</strong>
+                  <span className="text-emerald-800/80 dark:text-emerald-300">Download & share with physicians.</span>
+                </div>
+              </div>
+
+              <div className="p-3 bg-white dark:bg-emerald-950/80 rounded-xl border border-emerald-100 dark:border-emerald-900 flex items-start gap-2.5">
+                <Lock className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <strong className="block text-emerald-950 dark:text-white font-bold">Secure Dashboard</strong>
+                  <span className="text-emerald-800/80 dark:text-emerald-300">100% confidential health workspace.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-4 border-t border-emerald-100 dark:border-emerald-900 flex flex-col sm:flex-row gap-2 justify-end">
+            <Button
+              variant="outline"
+              size="sm"
+              icon={LogIn}
+              onClick={() => navigate('/login')}
+              className="font-bold"
+            >
+              Sign In
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              icon={UserPlus}
+              onClick={() => navigate('/register')}
+              className="font-bold healora-glow"
+            >
+              Sign Up
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setShowAuthModal(false);
+                executeScan();
+              }}
+              className="font-extrabold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100/60"
+            >
+              Continue Without Sign In →
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

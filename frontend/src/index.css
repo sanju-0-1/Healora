@@ -51,18 +51,14 @@
 
   h1, h2, h3, .font-heading {
     font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
-    color: #1A6B4F;
   }
 
   .dark body {
     background: linear-gradient(180deg, #022019 0%, #063D30 50%, #042E24 100%);
     color: #F5FBF7;
   }
-
-  .dark h1, .dark h2, .dark h3, .dark .font-heading {
-    color: #F5FBF7;
-  }
 }
+
 
 /* Custom Anime Healer Animations & Glows */
 .healer-aura-glow {
